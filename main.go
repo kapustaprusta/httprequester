@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -57,7 +58,7 @@ func doWork(urlsChan <-chan string) (<-chan string, <-chan error) {
 	return resultsChan, errsChan
 }
 
-func checkPrefix(urls []string) {
+func addPrefixIfNeeded(urls []string) {
 	for urlIdx, url := range urls {
 		if !strings.HasPrefix(url, httpPrefix) || !strings.HasPrefix(url, httpsPrefix) {
 			urls[urlIdx] = httpPrefix + url
@@ -83,21 +84,33 @@ func main() {
 		resultsChans[workerIdx] = resultsChan
 	}
 
-	checkPrefix(urls)
+	addPrefixIfNeeded(urls)
 	for _, url := range urls {
 		urlsChan <- url
 	}
 	close(urlsChan)
 
-	for _, errsChan := range errsChans {
-		for err := range errsChan {
-			fmt.Println(err)
-		}
-	}
+	wg := &sync.WaitGroup{}
 
-	for _, resultsChan := range resultsChans {
-		for result := range resultsChan {
-			fmt.Println(result)
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		for _, errsChan := range errsChans {
+			for err := range errsChan {
+				fmt.Println(err)
+			}
 		}
-	}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		for _, resultsChan := range resultsChans {
+			for result := range resultsChan {
+				fmt.Println(result)
+			}
+		}
+	}()
+
+	wg.Wait()
 }
