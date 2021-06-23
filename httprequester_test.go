@@ -174,6 +174,50 @@ func TestValidateUrls(t *testing.T) {
 	}
 }
 
+func TestRepairUrls(t *testing.T) {
+	testCases := []struct {
+		name         string
+		urls         []string
+		repairedUrls []string
+	}{
+		{
+			name: "valid",
+			urls: []string{
+				"http://www.test1.com",
+				"https://www.test2.com",
+				"https://www.test3.com",
+			},
+			repairedUrls: []string{
+				"http://www.test1.com",
+				"https://www.test2.com",
+				"https://www.test3.com",
+			},
+		},
+		{
+			name: "urls without prefixes",
+			urls: []string{
+				"www.test1.com",
+				"www.test2.com",
+				"www.test3.com",
+			},
+			repairedUrls: []string{
+				"http://www.test1.com",
+				"http://www.test2.com",
+				"http://www.test3.com",
+			},
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			actualRepairedUrls := repairUrls(testCase.urls)
+			if !reflect.DeepEqual(testCase.repairedUrls, actualRepairedUrls) {
+				t.Fatalf("Wrong list of repaired urls. Expected: %v. Actual: %v.", testCase.repairedUrls, actualRepairedUrls)
+			}
+		})
+	}
+}
+
 func TestDoWork(t *testing.T) {
 	server := NewDummyServer()
 	defer server.Close()
