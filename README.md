@@ -2,7 +2,7 @@
 The tool for converting a site response to an MD5 hash
 
 ## Downloading
-For building the tool you should launch the next command
+For downloading the tool you should launch the next command
 ```
 git clone git@github.com:kapustaprusta/httprequester.git
 ```

@@ -72,6 +72,8 @@ func repairUrls(urls []string) []string {
 	for _, repairedUrl := range urls {
 		if !strings.HasPrefix(repairedUrl, httpPrefix) && !strings.HasPrefix(repairedUrl, httpsPrefix) {
 			repairedUrls = append(repairedUrls, httpPrefix+repairedUrl)
+		} else {
+			repairedUrls = append(repairedUrls, repairedUrl)
 		}
 	}
 
