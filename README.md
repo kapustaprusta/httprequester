@@ -27,7 +27,7 @@ make install
 ````
 
 ## How it works
-You should specify a list of urls to visit separated by whitespace:
+You should specify a list of urls to visit separated by whitespace (`defaut: empty`):
 ```
 httprequester url1 url2 url3 ...
 ```
@@ -45,7 +45,7 @@ http://facebook.com 486bf444e1770ca1f3bc4242228f99a5
 http://yahoo.com f898480da8aa9b5214395da8ee819933
 ```
 
-If you want specify number of parallel workers you should use parallel flag (`defaut 10`)
+If you want specify number of parallel workers you should use parallel flag (`defaut: 10`)
 ```
 ./httprequester --parallel 3 url1 url2 url3 ...
 ```
